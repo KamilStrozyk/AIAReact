@@ -29,7 +29,7 @@ export default function Navbar() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            Greaest movies of all time
+            Greatest movies of all time
           </Typography>
         </Toolbar>
       </AppBar>
