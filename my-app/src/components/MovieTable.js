@@ -2,53 +2,49 @@ import React, { Component } from 'react'
 import Table from '@material-ui/core/Table'
 import TableHead from '@material-ui/core/TableHead'
 import TableContainer from '@material-ui/core/TableContainer'
-import { makeStyles } from '@material-ui/core/styles';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import RemoveIcon from '@material-ui/icons/Remove';
+import data from '../data.json'
 
 class MovieTable extends Component {
 
-    createData(name, calories, fat, carbs, protein) {
-        return { name, calories, fat, carbs, protein };
+    imageStyle = {
+        "height": "100px",
+        "width": "100px"
     }
-
-    rows = [
-        this.createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-        this.createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-        this.createData('Eclair', 262, 16.0, 24, 6.0),
-        this.createData('Cupcake', 305, 3.7, 67, 4.3),
-        this.createData('Gingerbread', 356, 16.0, 49, 3.9),
-    ];
 
     render() {
         return (
             <TableContainer component={Paper}>
-                <Table  aria-label="simple table">
+                <Table aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell>Dessert (100g serving)</TableCell>
-                            <TableCell align="right">Calories</TableCell>
-                            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-                            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-                            <TableCell align="right">Protein&nbsp;(g)</TableCell>
+                            <TableCell><Button>Name</Button></TableCell>
+                            <TableCell align="right"><Button>Description</Button></TableCell>
+                            <TableCell align="right"><Button>Image</Button></TableCell>
+                            <TableCell align="right"><Button>Rating</Button></TableCell>
+                            <TableCell align="right"></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {this.rows.map((row) => (
+                        {data.map((row) => (
                             <TableRow key={row.name}>
                                 <TableCell component="th" scope="row">
                                     {row.name}
                                 </TableCell>
-                                <TableCell align="right">{row.calories}</TableCell>
-                                <TableCell align="right">{row.fat}</TableCell>
-                                <TableCell align="right">{row.carbs}</TableCell>
-                                <TableCell align="right">{row.protein}</TableCell>
+                                <TableCell align="right">{row.description}</TableCell>
+                                <TableCell align="right"><img src={row.image} style={this.imageStyle} /></TableCell>
+                                <TableCell align="right">{row.rating}</TableCell>
+                                <TableCell align="right"> <Button color='alert'><RemoveIcon /></Button></TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
+                <Button color='primary'>Add Element</Button>
             </TableContainer>
         )
     }
