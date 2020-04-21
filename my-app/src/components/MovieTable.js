@@ -11,35 +11,100 @@ import RemoveIcon from '@material-ui/icons/Remove';
 import data from '../data.json'
 
 class MovieTable extends Component {
-
+    constructor() {
+        super();
+        this.state = {
+            tableData: data,
+            dataToDisplay: data,
+            sortOrder: 1,
+            sortOderText: "Sort Desc"
+        };
+        this.sortData = this.sortData.bind(this)
+        this.setSortOrder = this.setSortOrder.bind(this)
+        this.removeElement = this.removeElement.bind(this)
+    }
     imageStyle = {
         "height": "100px",
         "width": "100px"
     }
 
+    setSortOrder() {
+        let newSortOrder = this.state.sortOrder;
+        let newSortOrderText = this.state.sortOderText;
+        if (newSortOrder === 1) {
+            newSortOrder = -1;
+            newSortOrderText = "Sort Asc"
+        } else {
+            newSortOrder = 1
+            newSortOrderText = "Sort Desc"
+        }
+        this.setState({
+            sortOrder: newSortOrder,
+            sortOderText: newSortOrderText
+        })
+    }
+
+    sortData(compFunc) {
+        let sortedData = this.state.tableData.sort(compFunc);
+        this.setState({
+            dataToDisplay: sortedData
+        })
+    }
+
+    sortByRating = (a, b) => {
+        let sortOrder = this.state.sortOrder;
+        return (a.rating - b.rating) * sortOrder;
+    }
+
+    sortByName = (a, b) => {
+        let sortOrder = this.state.sortOrder;
+        const nameA = a.name.toUpperCase();
+        const nameB = b.name.toUpperCase();
+        if (nameA > nameB) return sortOrder;
+        else return -1 * sortOrder;
+    }
+
+    sortByDescription = (a, b) => {
+        let sortOrder = this.state.sortOrder;
+        const descriptionA = a.description.toUpperCase();
+        const descriptionB = b.description.toUpperCase();
+        if (descriptionA > descriptionB) return sortOrder;
+        else return -1 * sortOrder;
+    }
+
+    removeElement(id) {
+        let tableData = this.state.tableData.filter(x => x.id !== id);
+        let dataToDisplay = this.state.dataToDisplay.filter(x => x.id !== id);
+        this.setState ({
+            tableData: tableData,
+            dataToDisplay: dataToDisplay,
+        });
+    }
+
     render() {
+        let that = this;
         return (
             <TableContainer component={Paper}>
                 <Table aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell><Button>Name</Button></TableCell>
-                            <TableCell align="right"><Button>Description</Button></TableCell>
+                            <TableCell><Button onClick={() => that.sortData(that.sortByName)}>Name</Button></TableCell>
+                            <TableCell align="right"><Button onClick={() => that.sortData(that.sortByDescription)}>Description</Button></TableCell>
                             <TableCell align="right"><Button>Image</Button></TableCell>
-                            <TableCell align="right"><Button>Rating</Button></TableCell>
-                            <TableCell align="right"></TableCell>
+                            <TableCell align="right"><Button onClick={() => that.sortData(that.sortByRating)}>Rating</Button></TableCell>
+                            <TableCell align="right"><Button onClick={this.setSortOrder}>{this.state.sortOderText}</Button></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {data.map((row) => (
-                            <TableRow key={row.name}>
+                        {this.state.dataToDisplay.map((row) => (
+                            <TableRow>
                                 <TableCell component="th" scope="row">
                                     {row.name}
                                 </TableCell>
                                 <TableCell align="right">{row.description}</TableCell>
                                 <TableCell align="right"><img src={row.image} style={this.imageStyle} /></TableCell>
                                 <TableCell align="right">{row.rating}</TableCell>
-                                <TableCell align="right"> <Button color='alert'><RemoveIcon /></Button></TableCell>
+                                <TableCell align="right"> <Button onClick={() => that.removeElement(row.id)}><RemoveIcon /></Button></TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
