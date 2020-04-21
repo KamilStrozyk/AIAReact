@@ -5,6 +5,7 @@ import TableContainer from '@material-ui/core/TableContainer'
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
+import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import RemoveIcon from '@material-ui/icons/Remove';
@@ -15,9 +16,9 @@ class MovieTable extends Component {
         super();
         this.state = {
             tableData: data,
-            dataToDisplay: data,
             sortOrder: 1,
-            sortOderText: "Sort Desc"
+            sortOderText: "Sort Desc",
+            searchText: ""
         };
         this.sortData = this.sortData.bind(this)
         this.setSortOrder = this.setSortOrder.bind(this)
@@ -47,7 +48,7 @@ class MovieTable extends Component {
     sortData(compFunc) {
         let sortedData = this.state.tableData.sort(compFunc);
         this.setState({
-            dataToDisplay: sortedData
+            tableData: sortedData
         })
     }
 
@@ -75,16 +76,36 @@ class MovieTable extends Component {
     removeElement(id) {
         let tableData = this.state.tableData.filter(x => x.id !== id);
         let dataToDisplay = this.state.dataToDisplay.filter(x => x.id !== id);
-        this.setState ({
+        this.setState({
             tableData: tableData,
             dataToDisplay: dataToDisplay,
         });
+    }
+
+    filterData(data) {
+        let value = this.state.searchText;
+        if (value !== "") {
+            return data.filter(x => x.description.includes(value) || x.name.includes(value) || x.rating.toString().includes(value))
+        } else {
+            return data;
+        }
     }
 
     render() {
         let that = this;
         return (
             <TableContainer component={Paper}>
+                <TextField
+                    label="Search"
+                    variant="standard"
+                    spellCheck="false"
+                    value={this.state.searchText}
+                    onChange={(text) => {
+                        let value = text.target.value;
+                        that.setState({ searchText: value })
+                    }}
+
+                />
                 <Table aria-label="simple table">
                     <TableHead>
                         <TableRow>
@@ -96,7 +117,7 @@ class MovieTable extends Component {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {this.state.dataToDisplay.map((row) => (
+                        {this.filterData(this.state.tableData).map((row) => (
                             <TableRow>
                                 <TableCell component="th" scope="row">
                                     {row.name}
