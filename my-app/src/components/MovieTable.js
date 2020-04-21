@@ -10,6 +10,7 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import RemoveIcon from '@material-ui/icons/Remove';
 import data from '../data.json'
+import AddElement from './AddElement';
 
 class MovieTable extends Component {
     constructor() {
@@ -18,12 +19,15 @@ class MovieTable extends Component {
             tableData: data,
             sortOrder: 1,
             sortOderText: "Sort Desc",
-            searchText: ""
+            searchText: "",
         };
+
         this.sortData = this.sortData.bind(this)
         this.setSortOrder = this.setSortOrder.bind(this)
         this.removeElement = this.removeElement.bind(this)
+        this.addElement = this.addElement.bind(this)
     }
+
     imageStyle = {
         "height": "100px",
         "width": "100px"
@@ -97,7 +101,26 @@ class MovieTable extends Component {
             tableData: tableData,
         });
     }
-    
+
+    addElement(name, description, image, rating) {
+
+        let tableData = this.state.tableData;
+
+        let id = Math.max.apply(null, tableData.map(x => x.id)) + 1;
+        let element = {
+            name:name,
+            id: id,
+            description: description,
+            image: image,
+            rating: rating
+        };
+        tableData.push(element);
+
+        this.setState({
+            tableData: tableData,
+        });
+    }
+
     render() {
         let that = this;
         return (
@@ -150,9 +173,9 @@ class MovieTable extends Component {
                                 <TableCell align="right"> <Button onClick={() => that.removeElement(row.id)}><RemoveIcon /></Button></TableCell>
                             </TableRow>
                         ))}
+                        <AddElement addFunc={this.addElement} />
                     </TableBody>
                 </Table>
-                <Button color='primary'>Add Element</Button>
             </TableContainer>
         )
     }
