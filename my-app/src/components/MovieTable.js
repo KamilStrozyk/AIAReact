@@ -75,10 +75,8 @@ class MovieTable extends Component {
 
     removeElement(id) {
         let tableData = this.state.tableData.filter(x => x.id !== id);
-        let dataToDisplay = this.state.dataToDisplay.filter(x => x.id !== id);
         this.setState({
             tableData: tableData,
-            dataToDisplay: dataToDisplay,
         });
     }
 
@@ -91,6 +89,15 @@ class MovieTable extends Component {
         }
     }
 
+    changeRating(id, value) {
+        let tableData = this.state.tableData;
+        let elementToChangeIndex = tableData.findIndex((x) => { return x.id === id });
+        tableData[elementToChangeIndex].rating = value;
+        this.setState({
+            tableData: tableData,
+        });
+    }
+    
     render() {
         let that = this;
         return (
@@ -124,7 +131,22 @@ class MovieTable extends Component {
                                 </TableCell>
                                 <TableCell align="right">{row.description}</TableCell>
                                 <TableCell align="right"><img src={row.image} style={this.imageStyle} /></TableCell>
-                                <TableCell align="right">{row.rating}</TableCell>
+                                <TableCell align="right">
+                                    <TextField
+                                        select
+                                        value={row.rating}
+                                        onChange={(input) => { that.changeRating(row.id, input.target.value) }}
+                                        SelectProps={{
+                                            native: true,
+                                        }}
+                                        variant="standard"
+                                    >
+                                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((option) => (
+                                            <option key={option} value={option}>
+                                                {option}
+                                            </option>
+                                        ))}
+                                    </TextField></TableCell>
                                 <TableCell align="right"> <Button onClick={() => that.removeElement(row.id)}><RemoveIcon /></Button></TableCell>
                             </TableRow>
                         ))}
